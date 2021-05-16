@@ -67,6 +67,7 @@ class Enemy(sprite.Sprite):
     def update(self):
         self.rect.y += self.speed
         if self.rect.y > 450:
+            rocket.HP -= 1
             self.rect.x = randint(10,500)
             self.rect.y = randint(-400,-10)
         if sprite.collide_rect(self,rocket):
@@ -175,7 +176,7 @@ mixer.music.load('space.ogg')
 mixer.music.play()
 p = False
 finish = False
-showbss =0 
+showbss = 0 
 
 while True:
     if finish == False:
@@ -254,5 +255,8 @@ while True:
 
     timer.tick(FPS)
     display.update()
+   
+
+
    
 
