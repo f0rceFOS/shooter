@@ -53,7 +53,7 @@ class Boss(sprite.Sprite):
         win.blit(self.image, (self.rect.x,self.rect.y))
     
 class Asteroid(sprite.Sprite):
-    def __init__ (self,x,y,filename,speed = randint(1,2)):
+    def __init__ (self,x,y,filename,speed = randint(1,3)):
         super().__init__()
         self.image = image.load(filename) 
         self.image = transform.scale(self.image,(100,100))
@@ -149,6 +149,11 @@ class Button:
 font.init()
 
 shrift = font.Font(None,70)
+loose = shrift.render('ТЫ ПРОИГРАЛ!', True, (100,255,255))
+pobeda = shrift.render('ТЫ ВЫЙГРАЛ!', True, (250,0,0))
+payse = shrift.render('ПАУЗА', True, (0,0,0))
+start = shrift.render('Нажми что-бы начать игру', True,(10,250,50))
+
 rocket = Player(x = 300,y = 450,filename = 'rocket.png',speed = 5)
 vrag1 = Enemy(x = randint(10,500), y = randint(-400,-10), filename = 'ufo.png')
 vrag2 = Enemy(x = randint(10,500), y = randint(-400,-10), filename = 'ufo.png')
@@ -156,13 +161,17 @@ vrag3 = Enemy(x = randint(10,500), y = randint(-400,-10), filename = 'ufo.png')
 vrag4 = Enemy(x = randint(10,500), y = randint(-400,-10), filename = 'ufo.png')
 vrag5 = Enemy(x = randint(10,500), y = randint(-400,-10), filename = 'ufo.png')
 
-aster1 = Asteroid(x = randint(0,1), y = randint(10,690), filename = 'asteroid.png')
+aster1 = Asteroid(x = randint(-100,-10), y = randint(10,690), filename = 'asteroid.png',speed = randint(1,3))
+aster2 = Asteroid(x = randint(-100,-10), y = randint(10,690), filename = 'asteroid.png',speed = randint(1,3))
+aster3 = Asteroid(x = randint(-100,-10), y = randint(10,690), filename = 'asteroid.png',speed = randint(1,3))
+aster4 = Asteroid(x = randint(-100,-10), y = randint(10,490), filename = 'asteroid.png',speed = randint(1,3))
+
 
 boss = Boss(x = 230, y = -212, filename = 'ufo.png')
-bat_start = Button(x=600,y=500,w=100,h=50,text = 'ПАУЗА')
-batbat = Button(x=600,y=500,w=100,h=50,text = 'СТАРТ')
+bat_start = Button(x=570,y=500,w=130,h=50,text = 'ПАУЗА')
+batbat = Button(x=570,y=500,w=130,h=50,text = 'СТАРТ')
 bat2 = Button(x=0,y=500,w=100,h=50,text = 'Reset')
-b_star = Button(x = 250,y=400,w=200,h=50,text = 'Начать игру')
+b_star = Button(x = 230,y=400,w=230,h=50,text = 'Начать игру')
 #сделать жизни
 boss.HP = 10
 rocket.HP = 2
@@ -173,12 +182,8 @@ NLO.add(vrag1, vrag2, vrag3, vrag4, vrag5)
 bullets = sprite.Group()
 
 ASTER = sprite.Group()
-ASTER.add(aster1)
+ASTER.add(aster1,aster2,aster3,aster4)
 
-loose = shrift.render('ТЫ ПРОИГРАЛ!', True, (100,255,255))
-pobeda = shrift.render('ТЫ ВЫЙГРАЛ!', True, (250,0,0))
-payse = shrift.render('ПАУЗА', True, (0,0,0))
-start = shrift.render('Нажми что-бы начать игру', True,(10,250,50))
 
 
 
@@ -208,9 +213,10 @@ while True:
         fon = image.load('ff.jpg')
         fon = transform.scale(fon, resolution)
         win.blit(fon,(0,0))
+        ASTER.update()
         b_star.draw()
         win.blit(start,(25,250))
-        ASTER.update()
+        
 
     if finish == False:
         win.blit(bg, (0,0))
