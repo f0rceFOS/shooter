@@ -4,7 +4,7 @@ from random import randint
 class Player(sprite.Sprite):
     def __init__ (self,x,y,filename,speed = 3):
         self.image = image.load(filename) 
-        self.image = transform.scale(self.image,(100,100))
+        self.image = transform.scale(self.image,(200,200))
         self.rect = self.image.get_rect()
 
         self.rect.x = x
@@ -36,7 +36,7 @@ class Boss(sprite.Sprite):
     def __init__ (self,x,y,filename,speed = 1):
         super().__init__()
         self.image = image.load(filename) 
-        self.image = transform.scale(self.image,(200,200))
+        self.image = transform.scale(self.image,(400,400))
         self.rect = self.image.get_rect()
 
         self.rect.x = x
