@@ -4,7 +4,7 @@ from random import randint
 class Player(sprite.Sprite):
     def __init__ (self,x,y,filename,speed = 3):
         self.image = image.load(filename) 
-        self.image = transform.scale(self.image,(200,200))
+        self.image = transform.scale(self.image,(100,100))
         self.rect = self.image.get_rect()
 
         self.rect.x = x
@@ -75,7 +75,7 @@ class Enemy(sprite.Sprite):
     def __init__ (self,x,y,filename,speed = 2):
         super().__init__()
         self.image = image.load(filename) 
-        self.image = transform.scale(self.image,(100,100))
+        self.image = transform.scale(self.image,(50,50))
         self.rect = self.image.get_rect()
 
         self.rect.x = x
@@ -290,8 +290,8 @@ while True:
                 NLO.add(vrag1, vrag2, vrag3, vrag4, vrag5)
             if b_star.check_click(e.pos):
                 finish = False
-        if e.type == KEYUP:
-            if e.key == K_SPACE:
+        if e.type == MOUSEBUTTONDOWN:
+            if e.button == 1:
                 rocket.fire()
 
     timer.tick(FPS)
