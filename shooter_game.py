@@ -36,7 +36,7 @@ class Boss(sprite.Sprite):
     def __init__ (self,x,y,filename,speed = 1):
         super().__init__()
         self.image = image.load(filename) 
-        self.image = transform.scale(self.image,(200,200))
+        self.image = transform.scale(self.image,(400,400))
         self.rect = self.image.get_rect()
 
         self.rect.x = x
@@ -52,13 +52,30 @@ class Boss(sprite.Sprite):
     def reset(self):
         win.blit(self.image, (self.rect.x,self.rect.y))
     
+class Asteroid(sprite.Sprite):
+    def __init__ (self,x,y,filename,speed = randint(1,3)):
+        super().__init__()
+        self.image = image.load(filename) 
+        self.image = transform.scale(self.image,(100,100))
+        self.rect = self.image.get_rect()
 
+        self.rect.x = x
+        self.rect.y = y
+        self.speed = speed
+    def update(self):
+        self.rect.x += self.speed
+        if self.rect.x > 720:
+            self.rect.x = randint(-400,-10)
+            self.rect.y = randint(10,690)
+        self.reset()
+    def reset(self):
+        win.blit(self.image, (self.rect.x,self.rect.y))
 
 class Enemy(sprite.Sprite):
     def __init__ (self,x,y,filename,speed = 2):
         super().__init__()
         self.image = image.load(filename) 
-        self.image = transform.scale(self.image,(100,100))
+        self.image = transform.scale(self.image,(50,50))
         self.rect = self.image.get_rect()
 
         self.rect.x = x
@@ -132,16 +149,29 @@ class Button:
 font.init()
 
 shrift = font.Font(None,70)
+loose = shrift.render('ТЫ ПРОИГРАЛ!', True, (100,255,255))
+pobeda = shrift.render('ТЫ ВЫЙГРАЛ!', True, (250,0,0))
+payse = shrift.render('ПАУЗА', True, (0,0,0))
+start = shrift.render('Нажми что-бы начать игру', True,(10,250,50))
+
 rocket = Player(x = 300,y = 450,filename = 'rocket.png',speed = 5)
 vrag1 = Enemy(x = randint(10,500), y = randint(-400,-10), filename = 'ufo.png')
 vrag2 = Enemy(x = randint(10,500), y = randint(-400,-10), filename = 'ufo.png')
 vrag3 = Enemy(x = randint(10,500), y = randint(-400,-10), filename = 'ufo.png')
 vrag4 = Enemy(x = randint(10,500), y = randint(-400,-10), filename = 'ufo.png')
 vrag5 = Enemy(x = randint(10,500), y = randint(-400,-10), filename = 'ufo.png')
+
+aster1 = Asteroid(x = randint(-100,-10), y = randint(10,690), filename = 'asteroid.png',speed = randint(1,3))
+aster2 = Asteroid(x = randint(-100,-10), y = randint(10,690), filename = 'asteroid.png',speed = randint(1,3))
+aster3 = Asteroid(x = randint(-100,-10), y = randint(10,690), filename = 'asteroid.png',speed = randint(1,3))
+aster4 = Asteroid(x = randint(-100,-10), y = randint(10,490), filename = 'asteroid.png',speed = randint(1,3))
+
+
 boss = Boss(x = 230, y = -212, filename = 'ufo.png')
-bat_start = Button(x=600,y=500,w=100,h=50,text = 'ПАУЗА')
-batbat = Button(x=600,y=500,w=100,h=50,text = 'СТАРТ')
+bat_start = Button(x=570,y=500,w=130,h=50,text = 'ПАУЗА')
+batbat = Button(x=570,y=500,w=130,h=50,text = 'СТАРТ')
 bat2 = Button(x=0,y=500,w=100,h=50,text = 'Reset')
+b_star = Button(x = 230,y=400,w=230,h=50,text = 'Начать игру')
 #сделать жизни
 boss.HP = 10
 rocket.HP = 2
@@ -151,9 +181,8 @@ VRAG.add(boss)
 NLO.add(vrag1, vrag2, vrag3, vrag4, vrag5)
 bullets = sprite.Group()
 
-loose = shrift.render('ТЫ ПРОИГРАЛ!', True, (100,255,255))
-pobeda = shrift.render('ТЫ ВЫЙГРАЛ!', True, (250,0,0))
-payse = shrift.render('ПАУЗА', True, (0,0,0))
+ASTER = sprite.Group()
+ASTER.add(aster1,aster2,aster3,aster4)
 
 
 
@@ -175,10 +204,20 @@ mixer.init()
 mixer.music.load('space.ogg')
 mixer.music.play()
 p = False
-finish = False
+finish = True
+lose = False
 showbss = 0 
 
 while True:
+    if finish == True:
+        fon = image.load('ff.jpg')
+        fon = transform.scale(fon, resolution)
+        win.blit(fon,(0,0))
+        ASTER.update()
+        b_star.draw()
+        win.blit(start,(25,250))
+        
+
     if finish == False:
         win.blit(bg, (0,0))
         if p:
@@ -199,7 +238,7 @@ while True:
             bullets.update()
             stalker = sprite.groupcollide(NLO, bullets, False, True)
             if rocket.HP < 1:
-                finish = True
+                lose = True
             for ch in stalker:
                 a += 1
                 if a > 18:
@@ -209,7 +248,7 @@ while True:
                 ch.rect.x = randint(10,500)
 
      
-    if finish == True:
+    if lose == True:
         win.fill((0,0,0))
         ay = image.load('ryins.jpg')
         ay = transform.scale(ay, resolution) 
@@ -239,6 +278,7 @@ while True:
                    
             if bat2.check_click(e.pos):
                 finish = False
+                lose = False
                 a = 0 
                 rocket.HP = 2
                 vrag1 = Enemy(x = randint(10,500), y = randint(-400,-10), filename = 'ufo.png')
@@ -248,9 +288,10 @@ while True:
                 vrag5 = Enemy(x = randint(10,500), y = randint(-400,-10), filename = 'ufo.png')
                 NLO = sprite.Group()
                 NLO.add(vrag1, vrag2, vrag3, vrag4, vrag5)
-               
-        if e.type == KEYUP:
-            if e.key == K_SPACE:
+            if b_star.check_click(e.pos):
+                finish = False
+        if e.type == MOUSEBUTTONDOWN:
+            if e.button == 1:
                 rocket.fire()
 
     timer.tick(FPS)
